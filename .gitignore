@@ -1,5 +1,8 @@
-# Ignorar el directorio node_modules
-node_modules/
-
 # Ignorar el archivo .env
 .env
+
+# Ignorar el archivo .gitignore (si es necesario, aunque no suele serlo)
+.gitignore
+
+# Ignorar la carpeta node_modules
+node_modules/
