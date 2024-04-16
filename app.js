@@ -18,7 +18,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(cookieParser());
 app.use(morgan('combined'));
 app.use(helmet());
-app.use(cors({ origin: ['http://localhost:3000', 'https://smogarg.com'], credentials: true }));
+app.use(cors({ origin: ['http://localhost:3000'], credentials: true }));
 
 // Conexión a MongoDB
 connectDB();

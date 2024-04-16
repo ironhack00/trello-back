@@ -1,11 +1,12 @@
-const { Router } = require('express');
-const path = require('path');
+// user.routes.js
 
-const routes = Router();
+const express = require('express');
+const router = express.Router();
+const User = require('../models/User');
+const userController = require('../controllers/user.controller');
 
-// Ruta de prueba
-routes.get('/prueba', function(req, res) {
-    res.send('Hola');
-});
+// Ruta para crear un nuevo usuario
+router.post('/users', userController.createUser);
 
-module.exports = routes;
+module.exports = router;
+
