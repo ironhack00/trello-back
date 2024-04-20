@@ -19,6 +19,7 @@ const createUniqueIndex = async () => {
 exports.createUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
+    console.log(username, email, password)
 
     // Verificar si el password cumple con los requisitos
     if (!validatePassword(password)) {
@@ -36,7 +37,7 @@ exports.createUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10); // 10 es el costo del hash
 
     // Crear el nuevo usuario con la contraseña hasheada
-    const newUser = await User.create({ username, email, password: hashedPassword });
+    const newUser = await User.create({ name:username, email, password: hashedPassword });
     
     res.status(201).json(newUser);
   } catch (error) {

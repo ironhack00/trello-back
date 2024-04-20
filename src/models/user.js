@@ -1,7 +1,12 @@
+// models/User.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   username: String,
+  name: {
+    type: String,
+    required: true,
+  },
   email: {
     type: String,
     required: true,
@@ -11,14 +16,9 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 7,
-    validate: {
-      validator: function(value) {
-        return /[A-Z]/.test(value) && /[\W_]/.test(value);
-      },
-      message: props => `${props.value} no cumple con los requisitos de contraseña. Debe tener al menos una mayúscula y un caracter especial.`,
-    },
   },
+  // Referencia a los IDs de los boards asociados
+  boards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Board' }]
 });
 
 module.exports = mongoose.model('User', userSchema);

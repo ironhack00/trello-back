@@ -10,7 +10,7 @@ const connectDB = require('./db.js');
 
 const app = express();
 
-app.name = 'API';
+app.name = 'Back-Trello';
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
@@ -18,7 +18,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(cookieParser());
 app.use(morgan('combined'));
 app.use(helmet());
-app.use(cors({ origin: ['http://localhost:3000'], credentials: true }));
+app.use(cors({ origin: ['http://localhost:3001'], credentials: true }));
 
 // Conexión a MongoDB
 connectDB();
