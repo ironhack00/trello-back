@@ -1,4 +1,3 @@
-// models/User.js
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -18,7 +17,13 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   // Referencia a los IDs de los boards asociados
-  boards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Board' }]
+  boards: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Board' }],
+  // Campo de enumeración para el rol del usuario
+  role: {
+    type: String,
+    enum: ['admin', 'client'],
+    default: 'client'
+  }
 });
 
 module.exports = mongoose.model('User', userSchema);

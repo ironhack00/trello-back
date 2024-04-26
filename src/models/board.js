@@ -2,9 +2,17 @@
 const mongoose = require('mongoose');
 
 const boardSchema = new mongoose.Schema({
-  nombre: String,
-  // Referencia a los IDs de los usuarios asociados
-  users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
+  nameboard: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Referencia a los usuarios asociados
+  lists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'List' }], // Usando una referencia al modelo List
+  created_at: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 module.exports = mongoose.model('Board', boardSchema);
