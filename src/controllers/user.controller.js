@@ -87,7 +87,7 @@ exports.getUser = async (req, res) => {
     console.log( email, password )
     // Buscar al usuario por su dirección de correo electrónico
     const user = await User.findOne({ email }).populate('boards');
-
+    console.log(user)
     if (!user) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }

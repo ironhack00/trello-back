@@ -13,8 +13,8 @@ router.get('/user', userController.getUser);
 
 // Ruta BOARD
 router.post('/board', boardController.createBoard);
-
 router.get('/boards', boardController.getAllBoards);
+router.get('/board', boardController.getBoardsByUserEmail);
 
 module.exports = router;
 

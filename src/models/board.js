@@ -7,7 +7,11 @@ const boardSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
-  users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Referencia a los usuarios asociados
+  adminBoard: {
+    type: String,
+    required: true,
+  },
+  users: { type: [String], required: true }, // Referencia a los usuarios asociados
   lists: [{ type: mongoose.Schema.Types.ObjectId, ref: 'List' }], // Usando una referencia al modelo List
   created_at: {
     type: Date,

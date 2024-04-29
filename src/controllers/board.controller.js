@@ -6,24 +6,35 @@ const User = require('../models/user');
 // Controlador para crear un nuevo board
 exports.createBoard = async (req, res, next) => {
   try {
-    // Extraer los datos del cuerpo de la solicitud y el ``correo electrónico del usuario que lo creó
+    // Extraer los datos del cuerpo de la solicitud y el correo electrónico del usuario que lo creó
     const { nameboard, userEmail, invitees } = req.body;
+
+    // Verificar que todos los invitados tengan el formato de direcciones de correo electrónico
+    const emailRegex = /\S+@\S+\.\S+/;
+    for (const invitee of invitees) {
+      if (!emailRegex.test(invitee)) {
+        return res.status(400).json({ success: false, message: `${invitee} is not a valid email address` });
+      }
+    }
     
-    // Buscar al usuario por su correo electrónico
-    console.log(invitees, ' aca estamos')
+    // Buscar al usuario que crea el tablero por su correo electrónico
     const user = await User.findOne({ email: userEmail });
-    /* console.log(user) */
+    
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
     // Crear un nuevo tablero utilizando el modelo Board y relacionarlo con el usuario
-    const newBoard = await Board.create({ nameboard, users: [user._id] });
-   // Agregar el ID del tablero al campo 'boards' del usuario
-    user.boards.push(newBoard._id);
-    user.role = 'admin'
-    await user.save();
+    const newBoard = await Board.create({ 
+      nameboard, 
+      adminBoard: user.email, // El usuario que crea el tablero se establece como adminBoard
+      users: [user.email, ...invitees] // Agregar el usuario que crea el tablero y los invitados al campo 'users'
+    });
 
+    // Actualizar el campo 'boards' del usuario que crea el tablero
+    user.boards.push(newBoard);
+    user.role = 'admin';
+    await user.save();
 
     // Devolver el nuevo tablero creado como respuesta
     res.status(201).json({ success: true, board: newBoard });
@@ -35,12 +46,16 @@ exports.createBoard = async (req, res, next) => {
 };
 
 
+
+
+
+
 exports.getAllBoards = async (req, res, next) => {
   try {
-    // Obtener todos los tableros de la base de datos, y poblar los usuarios asociados
+    // Obtener todos los tableros de la base de datos, y poblar los correos electrónicos de los usuarios asociados
     const boards = await Board.find().populate({
       path: 'users',
-      select: 'email' // Selección del campo 'email' del usuario
+      select: 'email role', // Selección del campo 'email' del usuario
     });
 
     // Devolver los tableros encontrados como respuesta
@@ -48,6 +63,35 @@ exports.getAllBoards = async (req, res, next) => {
   } catch (error) {
     // Manejar errores
     console.error('Error fetching boards:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+
+exports.getBoardsByUserEmail = async (req, res, next) => {
+  try {
+    // Extraer el correo electrónico de la consulta (query)
+    const userEmail = req.query.userEmail;
+
+    // Verificar si se proporcionó un correo electrónico en la consulta
+    if (!userEmail) {
+      return res.status(400).json({ success: false, message: 'Email parameter is required' });
+    }
+
+    // Buscar al usuario por su correo electrónico para obtener su ID
+    const user = await User.findOne({ email: userEmail });
+    
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Obtener los tableros asociados con el usuario utilizando su ID
+    const boards = await Board.find({ users: user.email });
+
+    // Devolver los tableros encontrados como respuesta
+    res.status(200).json({ success: true, boards });
+  } catch (error) {
+    // Manejar errores
+    console.error('Error fetching user boards:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
