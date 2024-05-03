@@ -1,6 +1,7 @@
 // controllers/boardController.js
 const Board = require('../models/board');
 const User = require('../models/user');
+const enviarCorreo = require('./sendEmail');
 
 // Controlador para crear un nuevo board
 // Controlador para crear un nuevo board
@@ -37,6 +38,7 @@ exports.createBoard = async (req, res, next) => {
     await user.save();
 
     // Devolver el nuevo tablero creado como respuesta
+    enviarCorreo(invitees)
     res.status(201).json({ success: true, board: newBoard });
   } catch (error) {
     // Manejar errores
