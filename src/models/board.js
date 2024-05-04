@@ -5,6 +5,7 @@ const boardSchema = new mongoose.Schema({
   nameboard: {
     type: String,
     required: true,
+    unique: true
   },
   adminBoard: {
     type: String,
