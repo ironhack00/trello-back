@@ -23,35 +23,44 @@ exports.createUser = async (req, res) => {
     let token = req.body.credential; // Obtenemos el token de la solicitud
     console.log(username, email, password);
 
-    // Verificar si se proporcionó un token
+    // Verificar si se proporcionó un token y si es una cuenta de Google
     if (token) {
       const decodedToken = jwt.decode(token, { complete: true });
 
       // Verificar si el token es válido y contiene la información necesaria
       if (decodedToken && decodedToken.payload) {
-       /*  console.log(decodedToken);
-        console.log(decodedToken.payload.email_verified); */
 
         // Si el correo electrónico está verificado en el token, usamos esos datos
         if (decodedToken.payload.email_verified) {
-          username = decodedToken.payload.given_name;
           email = decodedToken.payload.email;
-          password = 'miPaswword00*';
+
+          // Buscar al usuario por su dirección de correo electrónico
+          const existingUser = await User.findOne({ email });
+
+          if (existingUser) {
+            // El usuario ya existe, devolver los datos del usuario existente
+            return res.status(200).json(existingUser);
+          } else {
+            // Si el usuario no existe, se debe crear
+            username = decodedToken.payload.given_name;
+            password = 'miPaswword00*';
+          }
         }
       }
     }
 
+    // Verificar si ya existe un usuario con el mismo correo electrónico (solo si no es una cuenta de Google)
+    if (!token) {
+      const existingUser = await User.findOne({ email });
+      if (existingUser) {
+        // El correo electrónico ya está en uso
+        return res.status(400).json({ message: 'El correo electrónico ya está en uso. Por favor, elija otro.' });
+      }
+    }
 
     // Verificar si el password cumple con los requisitos
     if (!validatePassword(password)) {
       return res.status(400).json({ message: 'La contraseña no cumple con los requisitos. Debe tener al menos una mayúscula y un caracter especial.' });
-    }
-
-    // Verificar si ya existe un usuario con el mismo correo electrónico
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      // El correo electrónico ya está en uso
-      return res.status(400).json({ message: 'El correo electrónico ya está en uso. Por favor, elija otro.' });
     }
 
     // Hash de la contraseña utilizando bcrypt
