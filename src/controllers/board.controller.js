@@ -97,3 +97,49 @@ exports.getBoardsByUserEmail = async (req, res, next) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
+
+// controllers/boardController.js
+
+// Agrega las importaciones necesarias aquí
+
+exports.getBoardById = async (req, res, next) => {
+  try {
+    // Extraer el ID del tablero de los parámetros de la solicitud
+    const boardId = req.params.boardId;
+
+    // Verificar si se proporcionó un ID de tablero en los parámetros
+    if (!boardId) {
+      return res.status(400).json({ success: false, message: 'Board ID parameter is required' });
+    }
+
+    // Buscar el tablero por su ID en la base de datos y poblar el campo 'lists'
+    const board = await Board.findById(boardId).populate('lists');
+
+    // Verificar si el tablero existe
+    if (!board) {
+      return res.status(404).json({ success: false, message: 'Board not found' });
+    }
+
+    // Devolver el tablero encontrado como respuesta, junto con sus listas
+    res.status(200).json({ success: true, board });
+  } catch (error) {
+    // Manejar errores
+    console.error('Error fetching board by ID:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+
+exports.reorderLists = async (req, res) => {
+  try {
+    const { boardId } = req.params;
+    const { newListIds } = req.body;
+
+    // Actualiza el orden de las listas en el tablero
+    const updatedBoard = await Board.findByIdAndUpdate(boardId, { listIds: newListIds }, { new: true });
+
+    res.status(200).json({ message: 'Lists reordered successfully', board: updatedBoard });
+  } catch (error) {
+    console.error('Error reordering lists:', error);
+    res.status(500).json({ message: 'Error reordering lists' });
+  }
+};
