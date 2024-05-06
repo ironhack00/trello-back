@@ -27,9 +27,9 @@ router.delete('/board/:boardId/list/:listId', listController.deleteList); // Eli
 router.post('/board/:boardId/list/:listId/card', listController.createCard); // Crear una tarjeta en una lista
 router.put('/board/:boardId/list/:listId/card/:cardId', listController.updateCard); // Actualizar el título de una tarjeta
 router.delete('/board/:boardId/list/:listId/card/:cardId', listController.deleteCard); // Eliminar una tarjeta de una lista
-router.put('/board/:boardId/reorder-lists', boardController.reorderLists);
-
-
+router.put('/board/:boardId/reorder-lists', listController.reorderLists);
+router.put('/board/:boardId/list/:listId/reorder-cards', listController.reorderCards);
+router.put('/board/:boardId/move-card', listController.moveCard);
 
 module.exports = router;
 

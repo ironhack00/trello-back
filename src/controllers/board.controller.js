@@ -129,17 +129,5 @@ exports.getBoardById = async (req, res, next) => {
   }
 };
 
-exports.reorderLists = async (req, res) => {
-  try {
-    const { boardId } = req.params;
-    const { newListIds } = req.body;
 
-    // Actualiza el orden de las listas en el tablero
-    const updatedBoard = await Board.findByIdAndUpdate(boardId, { listIds: newListIds }, { new: true });
 
-    res.status(200).json({ message: 'Lists reordered successfully', board: updatedBoard });
-  } catch (error) {
-    console.error('Error reordering lists:', error);
-    res.status(500).json({ message: 'Error reordering lists' });
-  }
-};

@@ -112,14 +112,53 @@ exports.updateCard = async (req, res) => {
 exports.reorderLists = async (req, res) => {
   try {
     const { boardId } = req.params;
-    const { newListIds } = req.body;
+    const { newListOrder } = req.body;
 
-    // Actualiza el orden de las listas en el tablero
-    const updatedBoard = await Board.findByIdAndUpdate(boardId, { listIds: newListIds }, { new: true });
+    // Obtener el tablero de la base de datos
+    const board = await Board.findById(boardId);
+    if (!board) {
+      return res.status(404).json({ message: 'Board not found' });
+    }
+    // Modificar el orden de las listas
+    board.lists = newListOrder;
+
+    // Guardar los cambios en el tablero
+    const updatedBoard = await board.save();
 
     res.status(200).json({ message: 'Lists reordered successfully', board: updatedBoard });
   } catch (error) {
     console.error('Error reordering lists:', error);
     res.status(500).json({ message: 'Error reordering lists' });
+  }
+};
+
+exports.reorderCards = async (req, res) => {
+  try {
+    const { boardId, listId } = req.params;
+    const { cards } = req.body;
+
+    // Realiza las operaciones necesarias para reordenar las tarjetas en la lista
+    // Por ejemplo, puedes actualizar la lista en la base de datos con el nuevo orden de las tarjetas
+
+    res.status(200).json({ message: 'Cards reordered successfully' });
+  } catch (error) {
+    console.error('Error reordering cards:', error);
+    res.status(500).json({ message: 'Error reordering cards' });
+  }
+};
+
+// Controlador para mover la tarjeta de una lista a otra
+exports.moveCard = async (req, res) => {
+  try {
+    const { boardId } = req.params;
+    const { sourceListId, destinationListId, cards } = req.body;
+
+    // Realiza las operaciones necesarias para mover la tarjeta de una lista a otra
+    // Por ejemplo, puedes actualizar las listas correspondientes en la base de datos
+
+    res.status(200).json({ message: 'Card moved successfully' });
+  } catch (error) {
+    console.error('Error moving card:', error);
+    res.status(500).json({ message: 'Error moving card' });
   }
 };
