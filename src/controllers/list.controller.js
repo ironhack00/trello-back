@@ -132,29 +132,50 @@ exports.reorderLists = async (req, res) => {
   }
 };
 
-exports.reorderCards = async (req, res) => {
+
+/* exports.reorderCards = async (req, res) => {
   try {
-    const { boardId, listId } = req.params;
+    const { listId } = req.params;
     const { cards } = req.body;
 
-    // Realiza las operaciones necesarias para reordenar las tarjetas en la lista
-    // Por ejemplo, puedes actualizar la lista en la base de datos con el nuevo orden de las tarjetas
+    // Actualiza la lista en la base de datos con el nuevo orden de las tarjetas
+    const updatedList = await List.findByIdAndUpdate(listId, { cards }, { new: true });
 
-    res.status(200).json({ message: 'Cards reordered successfully' });
+    res.status(200).json({ message: 'Cards reordered successfully', list: updatedList });
   } catch (error) {
     console.error('Error reordering cards:', error);
     res.status(500).json({ message: 'Error reordering cards' });
   }
-};
+}; */
+
 
 // Controlador para mover la tarjeta de una lista a otra
 exports.moveCard = async (req, res) => {
   try {
-    const { boardId } = req.params;
-    const { sourceListId, destinationListId, cards } = req.body;
+    const { sourceListId, destinationListId, draggableId, destinationIndex } = req.body;
 
-    // Realiza las operaciones necesarias para mover la tarjeta de una lista a otra
-    // Por ejemplo, puedes actualizar las listas correspondientes en la base de datos
+    // Encuentra la lista de origen en la base de datos
+    const sourceList = await List.findById(sourceListId);
+
+    // Encuentra la tarjeta a mover en la lista de origen
+    console.log( sourceList,  ' <--------- este el id de la card' )
+    const movedCardIndex = sourceList.cards.findIndex(card => card._id.toString() === draggableId);
+    console.log( movedCardIndex,  ' <--------- esta es la card a mover' )
+    const movedCard = sourceList.cards.splice(movedCardIndex, 1)[0];
+    console.log(movedCard, '<---------')
+    if (sourceListId === destinationListId) {
+      // Si estamos moviendo la tarjeta dentro de la misma lista, simplemente insertamos en la nueva posición
+      sourceList.cards.splice(destinationIndex, 0, movedCard);
+      await sourceList.save();
+    } else {
+      // Si estamos moviendo la tarjeta a otra lista, encontramos la lista de destino en la base de datos
+      const destinationList = await List.findById(destinationListId);
+      // Insertamos la tarjeta en la lista de destino en la posición adecuada
+      destinationList.cards.splice(destinationIndex, 0, movedCard);
+      // Guardamos los cambios en ambas listas
+      await sourceList.save();
+      await destinationList.save();
+    }
 
     res.status(200).json({ message: 'Card moved successfully' });
   } catch (error) {
@@ -162,3 +183,4 @@ exports.moveCard = async (req, res) => {
     res.status(500).json({ message: 'Error moving card' });
   }
 };
+

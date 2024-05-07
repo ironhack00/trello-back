@@ -12,9 +12,9 @@ function enviarCorreo(invitees) {
   invitees.forEach(( email ) => {
     console.log(email)
     const mailOptions = {
-      from: 'clone <clon-trello@gmail.com>',
+      from: 'Trello <guille.fernandeeez@gmail.com>',
       to: email,
-      /* subject: `${Nombre}`, */
+      subject: 'Invitación a Trello',
       html: `<!DOCTYPE html>
         <html lang="es">
         
