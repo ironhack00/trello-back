@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const { MONGO_URI } = process.env;
-
+/* const { MONGO_URI } = process.env; */
+const MONGO_URI = 'mongodb+srv://guilleAdmin:x1f3ZDx4CBaxQYzv@mongodb01.8excrlv.mongodb.net/trello-clone';
 const connectDB = async () => {
   try {
     await mongoose.connect(MONGO_URI);
