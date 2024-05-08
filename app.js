@@ -18,7 +18,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(cookieParser());
 app.use(morgan('combined'));
 app.use(helmet());
-app.use(cors({ origin: ['http://localhost:3001'], credentials: true }));
+app.use(cors({ origin: ['http://localhost:3001', 'https://trello-3.vercel.app'], credentials: true }));
 
 // Conexión a MongoDB
 connectDB();
