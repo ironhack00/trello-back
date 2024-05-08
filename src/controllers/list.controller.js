@@ -1,5 +1,5 @@
 // controllers/list.controller.js
-const List = require('../models/List');
+const List = require('../../models/list');
 const Board = require('../models/board'); // Asegúrate de que la ruta sea correcta
 
 exports.createList = async (req, res) => {
