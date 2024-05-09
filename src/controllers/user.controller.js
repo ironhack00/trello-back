@@ -4,7 +4,15 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
 // Función de validación del password
-const validatePassword = (password) => /[A-Z]/.test(password) && /[\W_]/.test(password);
+const validatePassword = (password) => {
+  if (!/[A-Z]/.test(password)) {
+      return "La contraseña debe contener al menos una letra mayúscula.";
+  }
+  if (!/[\W_]/.test(password)) {
+      return "La contraseña debe contener al menos un carácter especial.";
+  }
+  return true;
+};
 
 // Crear un índice único en la colección de usuarios para el campo de correo electrónico
 const createUniqueIndex = async () => {
