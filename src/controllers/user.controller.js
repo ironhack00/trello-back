@@ -67,9 +67,13 @@ exports.createUser = async (req, res) => {
     }
 
     // Verificar si el password cumple con los requisitos
-    if (!validatePassword(password)) {
+    /* if (!validatePassword(password)) {
       return res.status(400).json({ message: 'La contraseña no cumple con los requisitos. Debe tener al menos una mayúscula y un caracter especial.' });
-    }
+    } */
+    const validationResult = validatePassword(password);
+      if (validationResult !== true) {
+    return res.status(400).json({ message: validationResult });
+}
 
     // Hash de la contraseña utilizando bcrypt
     const hashedPassword = await bcrypt.hash(password, 10); // 10 es el costo del hash
