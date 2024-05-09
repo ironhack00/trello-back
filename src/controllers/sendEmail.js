@@ -30,7 +30,7 @@ function enviarCorreo(invitees) {
         <p style="text-align: center; font-size: 16px;">Has sido invitado a un nuevo board en Trello.</p>
         <p style="text-align: center; font-size: 16px;">Puedes acceder al board haciendo clic en el siguiente botón:</p>
         <p style="text-align: center;">
-            <a href="http://localhost:3001/" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Acceder al board</a>
+            <a href="https://trello-3.vercel.app/" style="display: inline-block; padding: 10px 20px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">Acceder al board</a>
         </p>
         <p style="text-align: center; font-size: 16px;">¡Esperamos verte allí!</p>
     </div>
