@@ -38,6 +38,7 @@ exports.createBoard = async (req, res, next) => {
           return res.status(400).json({ success: false, message: `${invitee} is not a valid email address` });
         }
       }
+      enviarCorreo(invitees)
     }
 
     // Crear un nuevo tablero utilizando el modelo Board y relacionarlo con el usuario
@@ -47,7 +48,7 @@ exports.createBoard = async (req, res, next) => {
       users: [user.email, ...invitees.filter(invitee => emailRegex.test(invitee))] 
     });
 
-    enviarCorreo(invitees)
+    
     // Actualizar el campo 'boards' del usuario que crea el tablero
     user.boards.push(newBoard);
     user.role = 'admin';
