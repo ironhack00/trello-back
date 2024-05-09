@@ -47,11 +47,12 @@ exports.createBoard = async (req, res, next) => {
       users: [user.email, ...invitees.filter(invitee => emailRegex.test(invitee))] 
     });
 
-
+    enviarCorreo(invitees)
     // Actualizar el campo 'boards' del usuario que crea el tablero
     user.boards.push(newBoard);
     user.role = 'admin';
-    await user.save();
+    await user.save();  
+    
 
     // Devolver el nuevo tablero creado como respuesta
     
