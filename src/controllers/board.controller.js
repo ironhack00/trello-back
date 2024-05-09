@@ -12,11 +12,7 @@ exports.createBoard = async (req, res, next) => {
 
     // Verificar que todos los invitados tengan el formato de direcciones de correo electrónico
     const emailRegex = /\S+@\S+\.\S+/;
-    for (const invitee of invitees) {
-      if (!emailRegex.test(invitee)) {
-        return res.status(400).json({ success: false, message: `${invitee} is not a valid email address` });
-      }
-    }
+    
     
     // Buscar al usuario que crea el tablero por su correo electrónico
     const user = await User.findOne({ email: userEmail });
@@ -29,8 +25,18 @@ exports.createBoard = async (req, res, next) => {
     const newBoard = await Board.create({ 
       nameboard, 
       adminBoard: user.email, // El usuario que crea el tablero se establece como adminBoard
-      users: [user.email, ...invitees] // Agregar el usuario que crea el tablero y los invitados al campo 'users'
+      users: [user.email] // Agregar el usuario que crea el tablero y los invitados al campo 'users'
     });
+
+    if (invitees[0] !== "") {
+      for (const invitee of invitees) {
+        if (!emailRegex.test(invitee)) {
+          return res.status(400).json({ success: false, message: `${invitee} is not a valid email address` });
+        }
+      }
+      newBoard.users.push(...invitees);
+      enviarCorreo(invitees)
+    }
 
     // Actualizar el campo 'boards' del usuario que crea el tablero
     user.boards.push(newBoard);
@@ -38,7 +44,7 @@ exports.createBoard = async (req, res, next) => {
     await user.save();
 
     // Devolver el nuevo tablero creado como respuesta
-    enviarCorreo(invitees)
+    
     res.status(201).json({ success: true, board: newBoard });
   } catch (error) {
     // Manejar errores
